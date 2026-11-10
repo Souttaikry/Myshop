@@ -25,6 +25,7 @@ Edit `.env`:
 - `MONGO_URI` — your MongoDB connection string.
   - Local Mongo: `mongodb://127.0.0.1:27017/stockdb`
   - MongoDB Atlas (free tier works fine): `mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/stockdb`
+- `MONGO_DNS_SERVERS` — optional comma-separated DNS server addresses. Set this only if Node reports `querySrv ECONNREFUSED` for an Atlas `mongodb+srv://` URI while your system DNS can resolve the Atlas SRV record.
 - `JWT_SECRET` — any long random string (used to sign login sessions).
 - `ADMIN_EMAIL` / `ADMIN_PASSWORD` — the admin account that will be created in the next step.
 
