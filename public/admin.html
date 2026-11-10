@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin — StockLedger</title>
+<link rel="stylesheet" href="/css/admin.css"/>
+<link rel="stylesheet" href="/css/admin-footer.css"/>
+<link rel="stylesheet" href="/css/admin-analysis.css"/>
+<!-- <link rel="stylesheet" href="/css/category.css"> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><img src="image/logo.png" alt="StockLedger Logo"></div>
+  <div class="topbar-right">
+    <span class="user-chip">Signed in as <strong id="userName"></strong></span>
+    <button class="btn btn-ghost btn-sm" onclick="logout()">Log out</button>
+  </div>
+  
+</div>
+
+
+
+<div class="container">
+  <nav class="main-nav" id="mainNav">
+    <button type="button" class="main-nav-btn active" data-tab="dashboard">📊 Dashboard</button>
+    <button type="button" class="main-nav-btn" data-tab="instock">📦 In Stock</button>
+    <button type="button" class="main-nav-btn" data-tab="orders">🧾 Orders</button>
+    <button type="button" class="main-nav-btn" data-tab="payments">💳 Payments</button>
+    <button type="button" class="main-nav-btn" data-tab="customers">👥 Customers</button>
+    <button type="button" class="main-nav-btn" data-tab="suppliers">🚚 Suppliers</button>
+    <button type="button" class="main-nav-btn" data-tab="purchaseorders">📥 Purchase Orders</button>
+  </nav>
+  <!-- ============ DASHBOARD ============ -->
+  <div class="admin-view active" id="view-dashboard">
+    <div class="stat-row">
+      <div class="stat-card clickable accent-green" onclick="openRevenueModal()">
+        <div class="stat-icon">💰</div>
+        <div class="label">Revenue today</div>
+        <div class="value" id="statRevenue">—</div>
+        <div class="hint">Click for breakdown</div>
+      </div>
+      <div class="stat-card clickable accent-pink" onclick="openOrdersModal()">
+        <div class="stat-icon">🧾</div>
+        <div class="label">Orders today</div>
+        <div class="value" id="statOrders">—</div>
+        <div class="hint">Click to see orders</div>
+      </div>
+      <div class="stat-card clickable accent-teal" onclick="openUnitsModal()">
+        <div class="stat-icon">📦</div>
+        <div class="label">Units sold today</div>
+        <div class="value" id="statUnits">—</div>
+        <div class="hint">Click for top products</div>
+      </div>
+      <div class="stat-card clickable accent-red" id="statLowCard" onclick="openStockModal()">
+        <div class="stat-icon">⚠️</div>
+        <div class="label">Low / out of stock</div>
+        <div class="value" id="statLow">—</div>
+        <div class="hint">Click to see which products</div>
+      </div>
+    </div>
+
+    <!-- ============ SALES & PROFIT ANALYSIS ============ -->
+    <div class="section-head" style="margin-top:36px;">
+      <h2>Sales &amp; Profit Analysis</h2>
+      <div class="section-head-actions">
+        <select id="analysisRange" onchange="loadAnalysis()">
+          <option value="today">Today</option>
+          <option value="7" selected>Last 7 days</option>
+          <option value="30">Last 30 days</option>
+          <option value="all">All time</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card accent-green">
+        <div class="stat-icon">💵</div>
+        <div class="label">Revenue</div>
+        <div class="value" id="analysisRevenue">—</div>
+      </div>
+      <div class="stat-card accent-red">
+        <div class="stat-icon">📦</div>
+        <div class="label">Cost (COGS)</div>
+        <div class="value" id="analysisCost">—</div>
+      </div>
+      <div class="stat-card accent-teal">
+        <div class="stat-icon">📈</div>
+        <div class="label">Profit</div>
+        <div class="value" id="analysisProfit">—</div>
+      </div>
+      <div class="stat-card accent-pink">
+        <div class="stat-icon">🎯</div>
+        <div class="label">Margin</div>
+        <div class="value" id="analysisMargin">—</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <canvas id="profitChart" height="90"></canvas>
+      <div id="analysisChartEmpty" class="empty-state" style="display:none;">No sales in this range yet.</div>
+    </div>
+
+    <!-- <div class="card" style="margin-top:16px;">
+      <h3 style="margin:0 0 12px;">Profit by product</h3>
+      <table>
+        <thead>
+          <tr><th>Product</th><th>Units sold</th><th>Revenue</th><th>Cost</th><th>Profit</th><th>Margin</th></tr>
+        </thead>
+        <tbody id="profitByProductRows"></tbody>
+      </table>
+      <div id="profitEmpty" class="empty-state" style="display:none;">No sales in this range yet.</div>
+    </div> -->
+  </div>
+
+  <!-- ============ IN STOCK ============ -->
+  <div class="admin-view" id="view-instock">
+    <div class="section-head">
+      <h2>Inventory</h2>
+      <div class="section-head-actions">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="productSearch" placeholder="Search by name, SKU, or category…" />
+        </div>
+        <button class="btn btn-primary" style="width:auto" onclick="openProductModal()">+ Add product</button>
+      </div>
+    </div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Photo</th><th>Product</th><th>SKU</th><th>Category</th><th>Price</th><th>Cost</th><th>Stock</th><th></th></tr>
+        </thead>
+        <tbody id="productRows"></tbody>
+      </table>
+      <div id="productEmpty" class="empty-state" style="display:none;">No products yet — add your first one above.</div>
+    </div>
+  </div>
+
+  <!-- ============ ORDERS ============ -->
+  <div class="admin-view" id="view-orders">
+    <div class="section-head">
+      <h2>Orders</h2>
+      <div class="section-head-actions">
+        <button class="btn btn-ghost btn-sm" style="width:auto" onclick="openCleanupModal()">🧹 Clear old orders</button>
+      </div>
+    </div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th></tr>
+        </thead>
+        <tbody id="saleRows"></tbody>
+      </table>
+      <div id="saleEmpty" class="empty-state" style="display:none;">No sales recorded yet.</div>
+    </div>
+  </div>
+
+  <!-- ============ PAYMENTS ============ -->
+  <div class="admin-view" id="view-payments">
+    <div class="section-head">
+      <h2>Payments</h2>
+    </div>
+    <div class="stat-row" id="paymentStatRow"></div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Customer</th><th>Method</th><th>Reference</th><th>Amount</th><th>Status</th></tr>
+        </thead>
+        <tbody id="paymentRows"></tbody>
+      </table>
+      <div id="paymentEmpty" class="empty-state" style="display:none;">No payments recorded yet.</div>
+    </div>
+  </div>
+
+  <!-- ============ CUSTOMERS ============ -->
+  <div class="admin-view" id="view-customers">
+    <div class="section-head">
+      <h2>Customers</h2>
+      <div class="section-head-actions">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="customerSearch" placeholder="Search by name or email…" />
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Email</th><th>Joined</th><th>Orders</th><th>Total spent</th><th>Last order</th></tr>
+        </thead>
+        <tbody id="customerRows"></tbody>
+      </table>
+      <div id="customerEmpty" class="empty-state" style="display:none;">No customers have registered yet.</div>
+    </div>
+  </div>
+
+  <!-- ============ SUPPLIERS ============ -->
+  <div class="admin-view" id="view-suppliers">
+    <div class="section-head">
+      <h2>Suppliers</h2>
+      <div class="section-head-actions">
+        <button class="btn btn-primary" style="width:auto" onclick="openSupplierModal()">+ Add supplier</button>
+      </div>
+    </div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Contact</th><th>Email</th><th>Phone</th><th>Address</th><th></th></tr>
+        </thead>
+        <tbody id="supplierRows"></tbody>
+      </table>
+      <div id="supplierEmpty" class="empty-state" style="display:none;">No suppliers yet — add your first one above.</div>
+    </div>
+  </div>
+
+  <!-- ============ PURCHASE ORDERS ============ -->
+  <div class="admin-view" id="view-purchaseorders">
+    <div class="section-head">
+      <h2>Purchase Orders</h2>
+      <div class="section-head-actions">
+        <button class="btn btn-primary" style="width:auto" onclick="openPoModal()">+ New purchase order</button>
+      </div>
+    </div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Supplier</th><th>Items</th><th>Total cost</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody id="poRows"></tbody>
+      </table>
+      <div id="poEmpty" class="empty-state" style="display:none;">No purchase orders yet — create your first one above.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Add / edit product modal -->
+<div class="modal-backdrop" id="productModal">
+  <div class="modal">
+    <button type="button" class="modal-close" onclick="closeProductModal()">✕</button>
+    <h3 id="modalTitle">Add product</h3>
+    <div id="modalAlert" class="alert alert-error"></div>
+    <form id="productForm">
+      <input type="hidden" id="productId" />
+      <div class="field"><label>Name</label><input type="text" id="pName" required /></div>
+      <div class="field"><label>SKU</label><input type="text" id="pSku" required placeholder="e.g. SKU-1001" /></div>
+      <div class="field"><label>Category</label><input type="text" id="pCategory" placeholder="General" /></div>
+      <div class="field"><label>Price</label><input type="number" id="pPrice" step="0.01" min="0" required /></div>
+      <div class="field"><label>Cost price</label><input type="number" id="pCost" step="0.01" min="0" required placeholder="What you paid per unit" /></div>
+      <div class="field"><label>Stock quantity</label><input type="number" id="pStock" min="0" required /></div>
+      <div class="field"><label>Low stock alert threshold</label><input type="number" id="pThreshold" min="0" value="5" /></div>
+      <div class="field">
+        <label>Product photo</label>
+        <input type="file" id="pImageFile" accept="image/png, image/jpeg, image/gif, image/webp" onchange="handleProductImageSelect(event)" />
+        <input type="hidden" id="pImageUrl" />
+        <div class="img-preview-box" id="pImagePreviewBox" style="display:none;">
+          <img id="pImagePreview" alt="Product image preview" />
+        </div>
+        <div id="pImageUploadStatus" class="field-hint"></div>
+      </div>
+      <div class="field"><label>Description</label><textarea id="pDescription" rows="3"></textarea></div>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-ghost" onclick="closeProductModal()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- Low / out of stock report modal -->
+<div class="modal-backdrop" id="stockModal">
+  <div class="modal modal-wide">
+    <button type="button" class="modal-close" onclick="closeStockModal()">✕</button>
+    <h3>Low &amp; out of stock</h3>
+    <p class="modal-sub">Products at or below their alert threshold, sorted by most urgent first.</p>
+
+    <div class="stock-tabs">
+      <button type="button" class="stock-tab active" data-filter="all" onclick="setStockFilter('all')">All <span class="count" id="countAll">0</span></button>
+      <button type="button" class="stock-tab" data-filter="out" onclick="setStockFilter('out')">Out of stock <span class="count" id="countOut">0</span></button>
+      <button type="button" class="stock-tab" data-filter="low" onclick="setStockFilter('low')">Low stock <span class="count" id="countLow">0</span></button>
+    </div>
+
+    <div class="stock-list" id="stockList"></div>
+    <div class="stock-empty" id="stockEmpty" style="display:none;">Nothing here — every product is above its threshold.</div>
+  </div>
+</div>
+
+<!-- Revenue breakdown modal -->
+<div class="modal-backdrop" id="revenueModal">
+  <div class="modal">
+    <button type="button" class="modal-close" onclick="closeModal('revenueModal')">✕</button>
+    <h3>Revenue today</h3>
+    <p class="modal-sub">Broken down by payment method.</p>
+    <div class="detail-total" id="revenueTotal">$0.00</div>
+    <div id="revenueBreakdown"></div>
+    <div class="stock-empty" id="revenueEmpty" style="display:none;">No sales recorded yet today.</div>
+  </div>
+</div>
+
+<!-- Orders today modal -->
+<div class="modal-backdrop" id="ordersModal">
+  <div class="modal modal-wide">
+    <button type="button" class="modal-close" onclick="closeModal('ordersModal')">✕</button>
+    <h3>Orders today</h3>
+    <p class="modal-sub" id="ordersSub">0 orders placed.</p>
+    <div class="stock-list" id="ordersList"></div>
+    <div class="stock-empty" id="ordersEmpty" style="display:none;">No orders placed yet today.</div>
+  </div>
+</div>
+
+<!-- Units sold today modal -->
+<div class="modal-backdrop" id="unitsModal">
+  <div class="modal">
+    <button type="button" class="modal-close" onclick="closeModal('unitsModal')">✕</button>
+    <h3>Units sold today</h3>
+    <p class="modal-sub" id="unitsSub">0 units across 0 products.</p>
+    <div class="stock-list" id="unitsList"></div>
+    <div class="stock-empty" id="unitsEmpty" style="display:none;">No units sold yet today.</div>
+  </div>
+</div>
+
+<!-- Clear old orders modal -->
+<div class="modal-backdrop" id="cleanupModal">
+  <div class="modal">
+    <button type="button" class="modal-close" onclick="closeModal('cleanupModal')">✕</button>
+    <h3>Clear old orders</h3>
+    <p class="modal-sub">
+      Permanently deletes orders older than the number of days below.
+      Pending orders are kept unless you choose "All statuses".
+    </p>
+    <div id="cleanupAlert" class="alert alert-error"></div>
+    <form id="cleanupForm">
+      <div class="field">
+        <label>Older than (days)</label>
+        <input type="number" id="cleanupDays" min="1" value="30" required />
+      </div>
+      <div class="field">
+        <label>Which orders</label>
+        <select id="cleanupStatus">
+          <option value="completed,cancelled" selected>Completed &amp; cancelled only (safe)</option>
+          <option value="cancelled">Cancelled only</option>
+          <option value="completed">Completed only</option>
+          <option value="all">All statuses (includes pending)</option>
+        </select>
+      </div>
+      <div class="modal-actions cleanup-actions">
+          <button
+              type="submit"
+              class="cleanup-delete-btn"
+              id="cleanupSubmitBtn">
+              🗑️ លុប
+          </button>
+
+          <button
+              type="button"
+              class="cleanup-cancel-btn"
+              onclick="closeModal('cleanupModal')">
+              បោះបង់
+          </button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Add / edit supplier modal -->
+<div class="modal-backdrop" id="supplierModal">
+  <div class="modal">
+    <button type="button" class="modal-close" onclick="closeModal('supplierModal')">✕</button>
+    <h3 id="supplierModalTitle">Add supplier</h3>
+    <div id="supplierAlert" class="alert alert-error"></div>
+    <form id="supplierForm">
+      <input type="hidden" id="supplierId" />
+      <div class="field"><label>Supplier name</label><input type="text" id="sName" required /></div>
+      <div class="field"><label>Contact person</label><input type="text" id="sContactName" /></div>
+      <div class="field"><label>Email</label><input type="email" id="sEmail" /></div>
+      <div class="field"><label>Phone</label><input type="text" id="sPhone" /></div>
+      <div class="field"><label>Address</label><input type="text" id="sAddress" /></div>
+      <div class="field"><label>Notes</label><textarea id="sNotes" rows="2"></textarea></div>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-ghost" onclick="closeModal('supplierModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- New purchase order modal -->
+<div class="modal-backdrop" id="poModal">
+  <div class="modal modal-wide">
+    <button type="button" class="modal-close" onclick="closeModal('poModal')">✕</button>
+    <h3>New purchase order</h3>
+    <p class="modal-sub">Stock is only added once you mark the order as received.</p>
+    <div id="poAlert" class="alert alert-error"></div>
+    <form id="poForm">
+      <div class="field">
+        <label>Supplier</label>
+        <select id="poSupplier" required></select>
+      </div>
+
+      <label style="font-weight:800; font-size:14px; display:block; margin:14px 0 8px;">Items</label>
+      <div id="poItemRows"></div>
+      <button type="button" class="btn btn-ghost btn-sm po-add-item-btn" onclick="addPoItemRow()">+ Add item</button>
+
+      <div class="po-total-line">
+        <span>Total cost</span>
+        <span id="poTotalPreview">$0.00</span>
+      </div>
+
+      <div class="field"><label>Notes (optional)</label><textarea id="poNotes" rows="2"></textarea></div>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">Create order</button>
+        <button type="button" class="btn btn-ghost" onclick="closeModal('poModal')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer class="admin-footer">
+  <div class="admin-footer-top">
+    <div class="admin-footer-brand">
+      <div class="admin-footer-mark">(COSTME)</div>
+      <p class="admin-footer-tag">Real inventory, updated the moment someone buys — what you see is always what's on the shelf.</p>
+    </div>
+
+    <div class="admin-footer-links">
+      <div class="admin-footer-col">
+        <span class="admin-footer-heading">Operations</span>
+        <a href="#" onclick="document.querySelector('[data-tab=orders]').click(); return false;">Orders</a>
+        <a href="#" onclick="document.querySelector('[data-tab=instock]').click(); return false;">Inventory</a>
+        <a href="#" onclick="document.querySelector('[data-tab=purchaseorders]').click(); return false;">Purchase orders</a>
+      </div>
+      <div class="admin-footer-col">
+        <span class="admin-footer-heading">People</span>
+        <a href="#" onclick="document.querySelector('[data-tab=customers]').click(); return false;">Customers</a>
+        <a href="#" onclick="document.querySelector('[data-tab=suppliers]').click(); return false;">Suppliers</a>
+        <a href="#" onclick="document.querySelector('[data-tab=payments]').click(); return false;">Payments</a>
+      </div>
+      <div class="admin-footer-col">
+        <span class="admin-footer-heading">Categories</span>
+        <span class="admin-footer-static">Skincare</span>
+        <span class="admin-footer-static">Hair care</span>
+        <span class="admin-footer-static">Makeup · Fragrance</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-footer-bottom">
+    <span>© <span id="footerYear"></span> COSTME — StockLedger admin</span>
+    <span class="admin-footer-dot-line">
+      <span class="admin-footer-dot accent-green"></span>
+      <span class="admin-footer-dot accent-pink"></span>
+      <span class="admin-footer-dot accent-teal"></span>
+      <span class="admin-footer-dot accent-red"></span>
+    </span>
+  </div>
+</footer>
+
+<script src="/js/api.js"></script>
+<script src="/js/admin.js"></script>
+<script>document.getElementById("footerYear").textContent = new Date().getFullYear();</script>
+
+<!-- ============ SALES & PROFIT ANALYSIS LOGIC ============ -->
+<script>
+/*
+  Pulls real revenue / cost (COGS) / profit / margin straight from MongoDB
+  via GET /api/sales/analysis/summary?range=today|7|30|all (see routes/sales.js).
+  Cost is priced using each product's current "Cost price" (Product.cost).
+*/
+
+let profitChartInstance = null;
+
+async function fetchAnalysis(range) {
+  return apiFetch('/api/sales/analysis/summary?range=' + encodeURIComponent(range));
+}
+
+async function loadAnalysis() {
+  const range = document.getElementById('analysisRange').value;
+
+  let data;
+  try {
+    data = await fetchAnalysis(range);
+  } catch (err) {
+    console.error('Sales & Profit Analysis: failed to load data', err);
+    document.getElementById('analysisRevenue').textContent = '—';
+    document.getElementById('analysisCost').textContent = '—';
+    document.getElementById('analysisProfit').textContent = '—';
+    document.getElementById('analysisMargin').textContent = '—';
+    return;
+  }
+
+  document.getElementById('analysisRevenue').textContent = money(data.totalRevenue);
+  document.getElementById('analysisCost').textContent = money(data.totalCost);
+  document.getElementById('analysisProfit').textContent = money(data.totalProfit);
+  document.getElementById('analysisMargin').textContent = data.margin.toFixed(1) + '%';
+
+  // ---- Product breakdown table (hidden by default in the markup above) ----
+  const rowsEl = document.getElementById('profitByProductRows');
+  if (rowsEl) {
+    const rows = data.byProduct || [];
+    rowsEl.innerHTML = '';
+    const profitEmptyEl = document.getElementById('profitEmpty');
+    if (profitEmptyEl) profitEmptyEl.style.display = rows.length ? 'none' : 'block';
+
+    rows.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + r.name + '</td>' +
+        '<td>' + r.units + '</td>' +
+        '<td>' + money(r.revenue) + '</td>' +
+        '<td>' + money(r.cost) + '</td>' +
+        '<td>' + money(r.profit) + '</td>' +
+        '<td>' + r.margin.toFixed(1) + '%</td>';
+      rowsEl.appendChild(tr);
+    });
+  }
+
+  // ---- Chart (revenue vs profit by day) ----
+  const byDay = data.byDay || [];
+  const chartEmptyEl = document.getElementById('analysisChartEmpty');
+  const canvas = document.getElementById('profitChart');
+
+  if (byDay.length === 0) {
+    canvas.style.display = 'none';
+    chartEmptyEl.style.display = 'block';
+    if (profitChartInstance) { profitChartInstance.destroy(); profitChartInstance = null; }
+    return;
+  }
+  canvas.style.display = 'block';
+  chartEmptyEl.style.display = 'none';
+
+  const days = byDay.map(d => d.date);
+  const revenueData = byDay.map(d => d.revenue);
+  const profitData = byDay.map(d => d.profit);
+
+  if (profitChartInstance) profitChartInstance.destroy();
+  profitChartInstance = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: days,
+      datasets: [
+        { label: 'Revenue', data: revenueData, borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', tension: 0.3, fill: true },
+        { label: 'Profit', data: profitData, borderColor: '#14b8a6', backgroundColor: 'rgba(20,184,166,0.1)', tension: 0.3, fill: true }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'top' } },
+      scales: { y: { beginAtZero: true, ticks: { callback: v => '$' + v } } }
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Load once on page ready; also reload whenever the Dashboard tab is clicked.
+  loadAnalysis();
+  const dashBtn = document.querySelector('[data-tab="dashboard"]');
+  if (dashBtn) dashBtn.addEventListener('click', loadAnalysis);
+});
+</script>
+</body>
+</html>

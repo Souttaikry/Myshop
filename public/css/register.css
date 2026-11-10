@@ -1,0 +1,235 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap');
+
+/* =====================================================================
+   STOCKLEDGER — "Ledger Stub" auth screen
+   Concept: signing in feels like signing the ledger. The page itself
+   is ruled accounting paper (red margin rule + blue horizontal rules).
+   The card is a stub torn off that page — jagged bottom edge, a strip
+   of perforation holes, an ink-stamp eyebrow instead of a soft pill,
+   and inputs that behave like ruled lines rather than boxed fields.
+   ===================================================================== */
+
+:root{
+  --bg: #f6f0e1;
+  --green: #2f6b4f;
+  --green-dark: #1f4d38;
+  --pink: #b3402c;      /* stamp accent (brick/terracotta, not hot pink) */
+  --red: #c0392b;
+  --ink: #23262b;
+  --gray: #857f68;
+  --line: #ddd0b0;
+  --white: #fffdf7;
+  --font-heading: 'Fraunces', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --radius-lg: 6px;
+  --radius-md: 4px;
+  --shadow-card: 0 22px 44px rgba(35,38,43,0.16);
+}
+
+*{ box-sizing: border-box; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  background: var(--bg);
+  font-family: var(--font-body);
+  color: var(--ink);
+}
+
+/* ---------- Shell / layout: genuine ruled ledger paper ---------- */
+.auth-shell{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  position:relative;
+  overflow:hidden;
+  background-image:
+    linear-gradient(to right, transparent 66px, rgba(179,64,44,0.32) 66px, rgba(179,64,44,0.32) 68px, transparent 68px),
+    repeating-linear-gradient(rgba(47,107,79,0.10) 0 1px, transparent 1px 34px);
+}
+.auth-shell::before{
+  content:"STOCKLEDGER — SIGN-IN REGISTER";
+  position:absolute;
+  top:22px; left:50%;
+  transform:translateX(-50%);
+  font-family: var(--font-mono);
+  font-size:11px;
+  letter-spacing:0.18em;
+  color: rgba(35,38,43,0.32);
+  white-space:nowrap;
+}
+.auth-shell::after{
+  content:"";
+  position:absolute;
+  bottom:-140px; left:-100px;
+  width:320px; height:320px;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(47,107,79,0.09), transparent 70%);
+}
+
+/* ---------- Card: a torn ledger stub ---------- */
+.auth-card{
+  position:relative;
+  z-index:2;
+  width:100%;
+  max-width:420px;
+  background: var(--white);
+  padding:44px 36px 50px;
+  clip-path: polygon(
+    0% 0%, 100% 0%,
+    100% 95%, 94% 100%, 88% 95%, 82% 100%, 76% 95%, 70% 100%,
+    64% 95%, 58% 100%, 52% 95%, 46% 100%, 40% 95%, 34% 100%,
+    28% 95%, 22% 100%, 16% 95%, 10% 100%, 4% 95%, 0% 100%
+  );
+  filter: drop-shadow(var(--shadow-card));
+}
+/* perforation strip, like a tear-off receipt still shows its punch line */
+.auth-card::before{
+  content:"";
+  position:absolute;
+  top:0; left:24px; right:24px; height:1px;
+  background-image: radial-gradient(circle, var(--bg) 2.5px, transparent 2.6px);
+  background-size: 14px 1px;
+  background-position: 0 0;
+}
+
+.tag-eyebrow{
+  display:inline-block;
+  font-family: var(--font-mono);
+  font-weight:700;
+  font-size:10.5px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color: var(--green-dark);
+  background: transparent;
+  border:1.5px dashed var(--green);
+  border-radius:3px;
+  padding:6px 12px;
+  margin-bottom:20px;
+  transform: rotate(-2deg);
+}
+
+.brand-title{
+  font-family: var(--font-heading);
+  font-weight:700;
+  font-size:28px;
+  margin:0 0 6px;
+  color: var(--ink);
+}
+.brand-sub{
+  font-size:13.5px;
+  color: var(--gray);
+  margin:0 0 26px;
+  line-height:1.6;
+  padding-bottom:20px;
+  border-bottom:1px dashed var(--line);
+}
+
+/* ---------- Alert ---------- */
+.alert{
+  display:none;
+  font-family: var(--font-mono);
+  font-size:12px;
+  line-height:1.6;
+  padding:11px 14px;
+  border-radius:3px;
+  margin-bottom:18px;
+}
+.alert.show{ display:block; }
+.alert-error{
+  background: rgba(192,57,43,0.08);
+  color: var(--red);
+  border:1px dashed rgba(192,57,43,0.4);
+}
+.alert-success{
+  background: rgba(47,107,79,0.08);
+  color: var(--green-dark);
+  border:1px dashed rgba(47,107,79,0.4);
+}
+
+/* ---------- Form: ledger-line fields ---------- */
+.field{
+  margin-bottom:20px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.field label{
+  font-family: var(--font-mono);
+  font-weight:700;
+  font-size:11px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color: var(--gray);
+}
+.field input{
+  padding:10px 4px;
+  border-radius:0;
+  border:none;
+  border-bottom: 1.5px solid var(--line);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size:14px;
+  color: var(--ink);
+  outline:none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.field input::placeholder{ color:#b4ac93; font-family: var(--font-body); }
+.field input:focus{
+  border-color: var(--green);
+  box-shadow: 0 1.5px 0 0 var(--green);
+}
+.field input:invalid:not(:placeholder-shown){
+  border-color: var(--red);
+}
+
+/* ---------- Buttons: an ink stamp, not a soft SaaS pill ---------- */
+.btn{
+  width:100%;
+  padding:14px;
+  border:2px solid var(--ink);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-heading);
+  font-weight:700;
+  font-size:15px;
+  letter-spacing:0.02em;
+  cursor:pointer;
+  transition: transform .08s ease, box-shadow .08s ease, background .15s ease;
+}
+.btn-primary{
+  background: var(--green);
+  border-color: var(--green-dark);
+  color:#fff;
+  box-shadow: 3px 3px 0 var(--green-dark);
+  margin-top:6px;
+}
+.btn-primary:hover{ background: var(--green-dark); }
+.btn-primary:active{
+  transform: translate(2px,2px);
+  box-shadow: 1px 1px 0 var(--green-dark);
+}
+
+/* ---------- Footer link ---------- */
+.form-footer{
+  text-align:center;
+  font-size:13px;
+  color: var(--gray);
+  margin:24px 0 0;
+}
+.form-footer a{
+  color: var(--pink);
+  font-weight:600;
+  text-decoration:none;
+  border-bottom: 1px dashed var(--pink);
+}
+.form-footer a:hover{ border-bottom-style: solid; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px){
+  .auth-card{ padding:36px 24px 40px; }
+  .brand-title{ font-size:23px; }
+  .auth-shell::before{ font-size:9px; }
+}

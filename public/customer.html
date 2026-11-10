@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shop — StockLedger</title>
+<link rel="stylesheet" href="/css/shop.css" />
+</head>
+<body class="shop">
+
+<header class="shop-header">
+  <div class="shop-logo"><img src="/image/logo.png" alt="StockLedger Logo"></div>
+  <nav class="shop-nav">
+    <a data-view="shop" class="active" href="/customer.html">Shop</a>
+    <a data-view="Invoice" href="/invoice.html">Invoices</a>
+    <a data-view="orders" href="/orders.html">My Orders</a>
+    <a data-view="/category" href="/category.html" target="_blank">CATEGORY</a>
+    <a data-view="/contact.html" href="/contact.html" target="_blank">CONTACT US</a>
+    <a data-view="/about.html" href="/about.html" target="_blank">ABOUT US</a>
+  </nav>
+  <div class="shop-actions">
+    <button class="icon-circle" id="searchToggle" title="Search">🔍</button>
+    <button class="icon-circle" id="cartToggle" title="Cart">
+      🛒<span class="cart-count" id="cartCount" style="display:none;">0</span>
+    </button>
+    <div class="shop-user">
+      Hi, <strong id="userName"></strong>
+      <br />
+      <button class="shop-logout" onclick="logout()">Log out</button>
+    </div>
+  </div>
+</header>
+
+<div id="searchBar" style="display:none; padding: 14px 32px 0;">
+  <input type="text" id="searchInput" placeholder="Search products…"
+    style="width:100%; max-width:420px; padding:11px 16px; border-radius:30px; border:1px solid var(--shop-line); font-family: var(--font-shop-body); font-size:14px;" />
+</div>
+
+
+
+
+
+<main class="shop-container">
+  <section class="shop-hero">
+    <div class="shop-hero-text">
+      <h1>✨ផលិតផលជ្រើសរើសពិសេសប្រចាំថ្ងៃ ទើបមកដល់ថ្មីៗ</h1>
+      <p>ផលិតផលទាំងអស់ខាងក្រោម មានក្នុងស្តុកពិតប្រាកដ។ អ្នកអាចជ្រើសរើសផលិតផលដែលត្រូវការ ហើយបន្តទៅការបង់ប្រាក់បានគ្រប់ពេល។</p>
+    </div>
+    <div class="shop-hero-emoji">
+      <img src="/image/shop-hero.png" alt="Featured product" style="width:100%; max-width:220px; height:auto; border-radius:14px;" />
+    </div>
+  </section>
+  <div class="cat-row" id="catRow"></div>
+  
+  <div id="shopView">
+    <div class="shop-section-title">Available now</div>
+    <div class="shop-grid" id="productGrid"></div>
+    <div id="productEmpty" class="shop-empty" style="display:none;">Nothing matches right now — try a different category or search.</div>
+  </div>
+
+  <div id="discountView">
+    <div class="shop-section-title">Product Discounts</div>
+    <div class="shop-grid" id="discountGrid"></div>
+    <div id="discountEmpty" class="shop-empty" style="display:none;">No discounted products right now.</div>
+  </div>
+    <div id="bestSellerView">
+    <div class="shop-section-title">Best Sellers</div>
+    <div class="shop-grid" id="bestSellerGrid"></div>
+    <div id="bestSellerEmpty" class="shop-empty" style="display:none;">No best-seller data yet.</div>
+  </div>
+
+  <!-- <div id="trendingView">
+    <div class="shop-section-title">Trending</div>
+    <div class="shop-grid" id="trendingGrid"></div>
+    <div id="trendingEmpty" class="shop-empty" style="display:none;">Nothing trending yet.</div>
+  </div>
+
+  <div id="favoriteView">
+    <div class="shop-section-title">Customer Favorites</div>
+    <div class="shop-grid" id="favoriteGrid"></div>
+    <div id="favoriteEmpty" class="shop-empty" style="display:none;">Not enough reviews yet.</div>
+  </div> -->
+
+  <div id="ordersView" style="display:none;">
+    <div class="shop-section-title">Your order history</div>
+    <div class="orders-panel" id="ordersPanel"></div>
+    <div id="orderEmpty" class="shop-empty" style="display:none;">You haven't bought anything yet.</div>
+  </div>
+
+  
+
+</main>  
+
+
+
+<footer class="shop-footer">
+  <div class="shop-logo"><img src="/image/logo.png" alt="StockLedger Logo"></div>
+  <p>Your everyday stock and sale tracker — real inventory, updated the moment someone buys, so what you see is always what's actually on the shelf.</p>
+  <div class="contact">Signed in as <span id="footerEmail"></span></div>
+</footer>
+
+<!-- Cart drawer -->
+<div class="cart-backdrop" id="cartBackdrop"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <h3>Your cart</h3>
+    <button class="cart-close" id="cartClose">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+
+  <div class="cart-items" id="paymentPanel" style="display:none;">
+    <button class="pay-back" id="paymentBack">← Back to cart</button>
+
+    <div class="pay-summary-row"><span>Items total</span><span id="paySummaryTotal">$0.00</span></div>
+
+    <div class="pay-method-list">
+      <label class="pay-method"><input type="radio" name="payMethod" value="cod" checked /> 💵 Cash on delivery</label>
+      <label class="pay-method"><input type="radio" name="payMethod" value="card" /> 💳 Credit / debit card</label>
+      <label class="pay-method"><input type="radio" name="payMethod" value="wallet" /> 📱 Digital wallet</label>
+    </div>
+
+    <div class="pay-fields" id="cardFields" style="display:none;">
+      <input id="cardNumber" placeholder="Card number" maxlength="19" inputmode="numeric" />
+      <div style="display:flex; gap:8px;">
+        <input id="cardExpiry" placeholder="MM/YY" maxlength="5" style="flex:1;" />
+        <input id="cardCvv" placeholder="CVV" maxlength="4" style="flex:1;" />
+      </div>
+    </div>
+    <div class="pay-fields" id="walletFields" style="display:none; flex-direction:column; align-items:center; gap:10px;">
+      <img src="/image/HKQR.jpg" alt="Scan to pay with ABA KHQR" style="width:220px; border-radius:8px;" />
+      <p id="walletAmountNote" style="font-size:13px; color:#555; text-align:center;">Scan with your banking app, then enter the total shown above ($<span id="walletAmountValue">0.00</span>) manually.</p>
+    </div>
+
+    <p class="pay-note">This is a demo checkout — no real payment is processed. Card and wallet details are used only to label the order.</p>
+  </div>
+
+  <div class="cart-items order-success" id="successPanel" style="display:none;">
+    <div class="big-check">✓</div>
+    <h4>Order placed</h4>
+    <p id="successMessage">Thanks for your purchase.</p>
+    <button class="shop-btn" id="continueShoppingBtn" style="width:auto; padding:11px 24px;">Continue shopping</button>
+  </div>
+
+  <div class="cart-foot" id="cartFoot">
+    <div class="cart-total-row"><span>Total</span><span id="cartTotal">$0.00</span></div>
+    <button class="shop-btn" id="checkoutBtn">Checkout</button>
+  </div>
+</div>
+
+<!-- Product detail modal -->
+<div class="pd-backdrop" id="pdBackdrop">
+  <div class="pd-modal">
+    <button class="pd-close" id="pdClose">✕</button>
+    <div class="pd-media" id="pdMedia"></div>
+    <div class="pd-body">
+      <div class="pd-category" id="pdCategory"></div>
+      <h2 class="pd-name" id="pdName"></h2>
+      <div class="pd-rating" id="pdRatingSummary"></div>
+      <div class="pd-price" id="pdPrice"></div>
+      <div class="pd-stock" id="pdStock"></div>
+      <p class="pd-desc" id="pdDesc"></p>
+
+      <div class="pd-qty-row">
+        <div class="cart-qty">
+          <button id="pdQtyMinus">−</button><span id="pdQtyValue">1</span><button id="pdQtyPlus">+</button>
+        </div>
+        <button class="shop-btn" id="pdAddBtn" style="width:auto; padding:12px 26px;">Add to cart</button>
+      </div>
+
+      <div class="pd-reviews">
+        <h3>Reviews</h3>
+        <div>
+          <div class="star-input" id="pdStarInput">
+            <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+          </div>
+          <textarea id="pdComment" rows="2" placeholder="Share your thoughts on this product…"></textarea>
+          <button class="shop-btn" id="pdSubmitReview" style="width:auto; padding:9px 20px;">Submit review</button>
+        </div>
+        <div id="pdReviewList" style="margin-top:16px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="shop-toast" id="toast"></div>
+
+<script src="/js/api.js"></script>
+<script src="/js/customer.js"></script>
+</body>
+</html>

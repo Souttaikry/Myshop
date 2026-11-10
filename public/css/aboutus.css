@@ -1,0 +1,264 @@
+/* ---------- About page v3 — "The Stock Receipt" ---------- */
+
+.about-deep {
+  --paper: #f8f3e6;
+  --paper-edge: #e7dac0;
+  --ink: #223326;
+  --ink-soft: #47543f;
+  --stamp: #a1472e;
+  --sage: #7fa672;
+  --deep: #223326;
+  --deep-soft: #33523d;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --font-kh: 'Kantumruy Pro', sans-serif;
+}
+
+.about-deep .about-hero h1,
+.about-deep .about-section-title {
+  font-family: 'Fraunces', var(--font-display, serif);
+}
+
+/* ================= Hero: the receipt ================= */
+
+.about-hero {
+  margin: 30px auto 0;
+  padding: 40px 20px 70px;
+  display: flex;
+  justify-content: center;
+  background:
+    radial-gradient(60% 70% at 50% 0%, #eef2e3 0%, transparent 65%),
+    var(--paper);
+}
+
+.receipt {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  background: #fffdf8;
+  border: 1px solid var(--paper-edge);
+  padding: 34px 34px 30px;
+  box-shadow: 0 26px 50px -20px rgba(34, 51, 38, 0.28), 0 2px 0 rgba(34,51,38,0.03);
+  transform: rotate(-1.1deg);
+  opacity: 0;
+  animation: receiptDrop 0.9s cubic-bezier(.16,.9,.3,1) 0.1s forwards;
+  clip-path: polygon(
+    0% 0%, 100% 0%, 100% 96%,
+    92% 100%, 84% 96%, 76% 100%, 68% 96%, 60% 100%, 52% 96%,
+    44% 100%, 36% 96%, 28% 100%, 20% 96%, 12% 100%, 4% 96%, 0% 100%
+  );
+}
+
+@keyframes receiptDrop {
+  from { opacity: 0; transform: rotate(-5deg) translateY(-18px); }
+  to   { opacity: 1; transform: rotate(-1.1deg) translateY(0); }
+}
+
+.receipt-tape {
+  position: absolute; top: -14px; left: 50%;
+  width: 92px; height: 26px;
+  background: rgba(255, 240, 200, 0.55);
+  border: 1px solid rgba(0,0,0,0.04);
+  transform: translateX(-50%) rotate(2deg);
+}
+
+.receipt-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+  color: var(--ink);
+}
+.receipt-dim { color: #9a8f78; margin-top: 2px; }
+.receipt-total { font-weight: 600; color: var(--stamp); }
+
+.receipt-rule {
+  border: none; border-top: 1px dotted #cabf9f;
+  margin: 14px 0;
+}
+.receipt-rule-dashed { border-top-style: dashed; }
+
+.receipt .kh {
+  display: block; font-family: var(--font-kh);
+  font-size: clamp(18px, 2.6vw, 22px);
+  color: var(--ink-soft);
+  margin: 18px 0 10px;
+}
+
+.receipt h1 {
+  font-weight: 600; font-style: normal;
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.22;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.receipt h1 em { font-style: italic; color: var(--stamp); }
+
+.receipt p {
+  font-family: var(--font-kh); color: var(--ink-soft); font-size: 14px;
+  line-height: 1.7;
+}
+
+/* ================= Section scaffolding ================= */
+
+.about-wrap { max-width: 1120px; margin: 0 auto; padding: 54px 32px 20px; }
+
+.about-section-title {
+  font-size: 22px; font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+.about-section-sub {
+  font-size: 13.5px; color: var(--shop-muted, #83907c); margin-bottom: 32px;
+}
+.reveal {
+  opacity: 0; transform: translateY(22px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* ================= Signature: hanging stock tags ================= */
+
+.shelf {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
+  margin-bottom: 64px;
+  padding: 46px 30px 30px;
+  background: var(--paper);
+  border-radius: 20px;
+  border: 1px solid var(--paper-edge);
+}
+
+.tag-slot { display: flex; flex-direction: column; align-items: center; }
+
+.tag {
+  position: relative;
+  width: 128px; height: 88px;
+  margin-bottom: 26px;
+  border-radius: 10px;
+  background: #fffdf8;
+  border: 1.5px dashed rgba(34,51,38,0.35);
+  overflow: hidden;
+  box-shadow: 0 12px 20px -8px rgba(34,51,38,0.18);
+}
+.tag::before {
+  /* string + knot above the tag */
+  content: "";
+  position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+  width: 1px; height: 20px; background: #b7ab8c;
+}
+.tag-hole {
+  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--paper);
+  border: 1.5px solid rgba(34,51,38,0.35);
+  z-index: 3;
+}
+.tag-fill {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 0%;
+  background: linear-gradient(160deg, var(--tag-a), var(--tag-b));
+  opacity: 0.85;
+  transition: height 1.3s cubic-bezier(.16,.84,.3,1);
+}
+.tag-slot.in .tag-fill { height: var(--fill-level); }
+
+.tag-face {
+  position: relative; z-index: 2;
+  height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px;
+}
+.tag-eyebrow {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+.tag-pct {
+  font-family: var(--font-mono); font-weight: 600; font-size: 22px; color: var(--ink);
+}
+.tag-bars {
+  display: block; width: 70px; height: 6px;
+  background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px);
+  opacity: 0.55;
+}
+
+.tag-slot h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; text-align: center; color: var(--ink); }
+.tag-slot p { font-size: 12.5px; color: var(--shop-muted, #83907c); line-height: 1.55; text-align: center; max-width: 220px; }
+
+/* ================= Values ================= */
+
+.value-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  margin-bottom: 60px;
+}
+.value-card {
+  border-radius: var(--shop-radius, 16px);
+  padding: 24px 18px;
+  text-align: center;
+  background: var(--shop-panel, #fff);
+  border: 1px solid var(--shop-line, var(--paper-edge));
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.value-card:hover { transform: translateY(-4px); box-shadow: 0 14px 26px rgba(34,51,38,0.1); }
+.value-mark {
+  width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center; font-size: 21px;
+  background: linear-gradient(135deg, var(--card-a, #cfe8b0), var(--card-b, #a7d9e8));
+}
+.value-card strong { display: block; font-size: 13.5px; margin-bottom: 6px; color: var(--ink); }
+.value-card span { font-size: 12px; color: var(--shop-muted, #83907c); line-height: 1.55; }
+
+/* ================= Quote band ================= */
+
+.quote-band {
+  background: var(--deep);
+  border-radius: 20px;
+  padding: 54px 40px;
+  margin-bottom: 60px;
+  text-align: center;
+  color: #eef3e6;
+}
+.quote-mark { font-family: 'Fraunces', serif; font-size: 40px; color: var(--sage); margin-bottom: 8px; }
+.quote-band blockquote {
+  font-family: var(--font-kh); font-size: 18px; line-height: 1.7;
+  max-width: 620px; margin: 0 auto 16px; font-style: normal;
+}
+.quote-band cite {
+  font-style: normal; font-size: 12.5px; color: #b9ccae; letter-spacing: 0.04em;
+}
+
+/* ================= Stats ================= */
+
+.stat-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  background: var(--shop-panel, #fff);
+  border: 1px solid var(--shop-line, var(--paper-edge));
+  border-radius: var(--shop-radius, 16px);
+  padding: 34px 20px;
+  margin-bottom: 60px;
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: var(--font-mono); font-weight: 600; font-size: 30px; color: var(--stamp);
+}
+.stat-label { font-size: 12.5px; color: var(--shop-muted, #83907c); margin-top: 4px; }
+
+/* ================= CTA ================= */
+
+.about-cta { text-align: center; padding: 10px 20px 70px; }
+.about-cta p { font-size: 14.5px; color: var(--shop-muted, #83907c); margin-bottom: 18px; }
+.about-cta a.shop-btn {
+  display: inline-block; width: auto; padding: 13px 30px;
+  background: var(--sage); color: #fff; border-radius: 30px;
+  font-weight: 700; font-size: 14px; text-decoration: none;
+  box-shadow: 0 10px 20px rgba(127,166,114,0.3);
+}
+.about-cta a.shop-btn:hover { background: var(--ink); }
+
+@media (max-width: 760px) {
+  .about-hero { padding: 24px 16px 50px; }
+  .about-wrap { padding: 40px 18px 10px; }
+  .shelf { grid-template-columns: 1fr; gap: 40px; padding: 40px 20px 20px; }
+  .value-row { grid-template-columns: 1fr 1fr; }
+  .stat-row { grid-template-columns: 1fr; }
+  .quote-band { padding: 40px 24px; }
+  .receipt { padding: 28px 22px 26px; }
+}
+@media (max-width: 480px) {
+  .value-row { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,89 @@
+/* ---------- Invoice page — standalone version of the orders.css invoice card ---------- */
+
+.inv-page {
+  min-height: 70vh;
+  padding: 40px 20px 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background:
+    radial-gradient(60% 70% at 50% 0%, #eef2e3 0%, transparent 65%),
+    var(--paper, #f8f3e6);
+}
+
+.inv-page-head {
+  width: 100%;
+  max-width: 460px;
+  text-align: center;
+  margin-bottom: 22px;
+}
+.inv-page-head h1 {
+  font-family: 'Fraunces', var(--font-display, serif);
+  font-size: 26px;
+  color: var(--ink, #223326);
+  margin: 0 0 6px;
+}
+.inv-page-head p {
+  font-size: 13px;
+  color: var(--ink-soft, #47543f);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Reuse .inv-modal from orders.css, but as a static block on the page
+   instead of a fixed-position dialog. */
+.inv-static {
+  position: static;
+  width: 100%;
+  max-width: 460px;
+  max-height: none;
+  overflow: visible;
+  margin: 0 auto;
+}
+
+.inv-state {
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  color: var(--ink-soft, #47543f);
+  text-align: center;
+  padding: 40px 20px;
+}
+.inv-state-error {
+  color: var(--stamp, #a1472e);
+  font-weight: 600;
+}
+
+.inv-actions {
+  width: 100%;
+  max-width: 460px;
+  margin: 22px auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.inv-actions .shop-btn {
+  width: auto;
+  padding: 12px 28px;
+}
+.inv-secondary-link {
+  font-size: 13px;
+  color: var(--ink-soft, #47543f);
+  text-decoration: underline;
+}
+.inv-secondary-link:hover { color: var(--ink, #223326); }
+
+/* Status stamp color variants */
+.inv-paid-stamp.status-pending { color: var(--amber, #b8863a); }
+.inv-paid-stamp.status-refunded { color: var(--stamp, #a1472e); }
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff !important; }
+  .inv-page { padding: 0; background: none; }
+  .inv-static {
+    box-shadow: none;
+    border: none;
+    max-width: 100%;
+  }
+}

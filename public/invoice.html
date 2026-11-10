@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Invoice — COSTME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@500;600&family=Kantumruy+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shop.css" />
+<link rel="stylesheet" href="/css/orders.css" />
+<link rel="stylesheet" href="/css/invoice.css" />
+</head>
+<body class="shop orders-deep">
+
+<header class="shop-header no-print">
+  <div class="shop-logo"><img src="/image/logo.png" alt="COSTME Logo"></div>
+  <nav class="shop-nav">
+    <a data-view="shop" href="/customer.html">Shop</a>
+    <a data-view="Invoice" class="active" href="/invoice.html">Invoices</a>
+    <a data-view="orders" href="/orders.html">My Orders</a>
+    <a data-view="/category" href="/category.html" target="_blank">CATEGORY</a>
+    <a data-view="/contact.html" href="/contact.html" target="_blank">CONTACT US</a>
+    <a data-view="/about.html" href="/about.html" target="_blank">ABOUT US</a>
+  </nav>
+  <div class="shop-actions">
+    <div class="shop-user">
+      Hi, <strong id="userName"></strong>
+      <br />
+      <button class="shop-logout" onclick="logout()">Log out</button>
+    </div>
+  </div>
+</header>
+
+<main class="inv-page">
+
+  <div class="inv-page-head no-print">
+    <h1>Your invoice</h1>
+    <p>This is the permanent payment record for your order, saved to our database the moment your payment went through.</p>
+  </div>
+
+  <div id="invoiceLoading" class="inv-state">Loading your invoice…</div>
+  <div id="invoiceError" class="inv-state inv-state-error" style="display:none;"></div>
+
+  <div class="inv-modal inv-static" id="invoiceCard" style="display:none;">
+    <div class="inv-head">
+      <div>
+        <div class="inv-brand">COSTME</div>
+        <div class="inv-brand-sub">Cosmetics &amp; personal care · Phnom Penh, Cambodia</div>
+      </div>
+      <span class="inv-paid-stamp" id="invStatusStamp">—</span>
+    </div>
+
+    <div class="inv-meta">
+      <div><span>Invoice number</span><strong id="invNumber">—</strong></div>
+      <div><span>Date</span><strong id="invDate">—</strong></div>
+      <div><span>Billed to</span><strong id="invCustomerName">—</strong></div>
+      <div><span>Email</span><strong id="invCustomerEmail">—</strong></div>
+    </div>
+
+    <div class="inv-rule"></div>
+
+    <table class="inv-table">
+      <thead>
+        <tr><th>Item</th><th class="num">Qty</th><th class="num">Unit</th><th class="num">Amount</th></tr>
+      </thead>
+      <tbody id="invItemsBody"></tbody>
+    </table>
+
+    <div class="inv-rule inv-rule-dashed"></div>
+
+    <div class="inv-totals">
+      <div><span>Subtotal</span><span id="invSubtotal">$0.00</span></div>
+      <div class="inv-grand"><span>Total</span><span id="invTotal">$0.00</span></div>
+    </div>
+
+    <div class="inv-rule"></div>
+
+    <div class="inv-pay">
+      <div><span>Payment method</span><strong id="invPayMethod">—</strong></div>
+      <div id="invPayRefRow"><span>Reference</span><strong id="invPayRef">—</strong></div>
+      <div><span>Invoice ID</span><strong id="invRawId">—</strong></div>
+    </div>
+
+    <p class="inv-footnote" id="invFootnote">Thank you for shopping with COSTME.</p>
+  </div>
+
+  <div class="inv-actions no-print" id="invActions" style="display:none;">
+    <button class="shop-btn" id="printBtn">🖨️ Print / Save as PDF</button>
+    <a class="inv-secondary-link" href="/orders.html">View all orders</a>
+    <a class="inv-secondary-link" href="/customer.html">Back to shop</a>
+  </div>
+  
+</main>
+<footer class="shop-footer">
+  <div class="shop-logo"><img src="/image/logo.png" alt="StockLedger Logo"></div>
+  <p>Your everyday stock and sale tracker — real inventory, updated the moment someone buys, so what you see is always what's actually on the shelf.</p>
+  <div class="contact">Signed in as <span id="footerEmail"></span></div>
+</footer>
+
+<script src="/js/api.js"></script>
+<script src="/js/invoice.js"></script>
+<script src="/js/customer.js"></script>
+</body>
+</html>

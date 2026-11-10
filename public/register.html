@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Create account — StockLedger</title>
+<link rel="stylesheet" href="/css/register.css" />
+</head>
+<body>
+
+<div class="auth-shell">
+  <div class="auth-card">
+    <div class="tag-eyebrow">BIN #002 — NEW CUSTOMER</div>
+    <h1 class="brand-title">Create account</h1>
+    <p class="brand-sub">Register to browse products and buy</p>
+
+    <div id="alertBox" class="alert alert-error"></div>
+
+    <form id="registerForm">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" required placeholder="Your name" />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" required placeholder="your@example.com" />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" required minlength="6" placeholder="At least 6 characters" />
+      </div>
+      <button type="submit" class="btn btn-primary">Create account</button>
+    </form>
+
+    <p class="form-footer">Already have an account? <a href="/login.html">Sign in</a></p>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/verify.js"></script>
+<script>
+  const form = document.getElementById("registerForm");
+  const alertBox = document.getElementById("alertBox");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    alertBox.classList.remove("show");
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    try {
+      let data = await apiFetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify({ name, email, password }),
+      });
+      if (data.needsVerification) {
+        data = await showVerifyModal(data);
+      }
+      saveSession(data);
+      window.location.href = "/customer.html";
+    } catch (err) {
+      alertBox.textContent = err.message;
+      alertBox.classList.add("show");
+    }
+  });
+</script>
+</body>
+</html>

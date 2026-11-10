@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About Us — COSTME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@500;600&family=Kantumruy+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shop.css" />
+<link rel="stylesheet" href="/css/aboutus.css" />
+
+</head>
+<body class="shop about-deep">
+
+<header class="shop-header">
+  <div class="shop-logo"><img src="/image/logo.png" alt="COSTME Logo"></div>
+  <nav class="shop-nav">
+    <a data-view="shop" href="/customer.html">Shop</a>
+    <a data-view="orders" href="/orders.html">My Orders</a>
+    <a data-view="/category" href="/category" target="_blank">CATEGORY</a>
+    <a data-view="/contact.html" href="/contact.html" target="_blank">CONTACT US</a>
+    <a data-view="/about.html" href="/about.html" class="active">ABOUT US</a>
+  </nav>
+  <div class="shop-actions">
+    <button class="icon-circle" id="searchToggle" title="Search" onclick="window.location.href='/customer.html'">🔍</button>
+    <button class="icon-circle" id="cartToggle" title="Cart" onclick="window.location.href='/customer.html'">
+      🛒<span class="cart-count" id="cartCount" style="display:none;">0</span>
+    </button>
+    <div class="shop-user">
+      Hi, <strong id="userName"></strong>
+      <br />
+      <button class="shop-logout" onclick="logout()">Log out</button>
+    </div>
+  </div>
+</header>
+
+<!-- ---------- Hero: the receipt ---------- -->
+<section class="about-hero">
+  <div class="receipt">
+    <div class="receipt-tape"></div>
+    <div class="receipt-row receipt-mono">COSTME · STOCK RECEIPT</div>
+    <div class="receipt-row receipt-mono receipt-dim" id="receiptDate">NO. 00184 — ISSUED TODAY</div>
+    <div class="receipt-rule"></div>
+    <span class="kh">រឿងរ៉ាវរបស់ COSTME</span>
+    <h1>Real stock.<br>Real reviews.<br><em>A shelf you can trust.</em></h1>
+    <p>ចាប់ផ្តើមពីក្តីស្រលាញ់ក្នុងការថែរក្សាស្បែក COSTME ធំធាត់ឡើងក្លាយជាកន្លែងទុកចិត្ត សម្រាប់ស្ត្រីខ្មែររាប់ពាន់នាក់ ក្នុងការស្វែងរកផលិតផលថែទាំសម្រស់ដែលពិតប្រាកដ។</p>
+    <div class="receipt-rule receipt-rule-dashed"></div>
+    <div class="receipt-row receipt-mono receipt-total">
+      <span>ITEMS VERIFIED</span><span>100%</span>
+    </div>
+  </div>
+</section>
+
+<main class="about-wrap">
+
+  <!-- ---------- Signature: Stock Tags ---------- -->
+  <div class="about-section-title reveal">Three tags off the shelf</div>
+  <p class="about-section-sub reveal">Every chapter of COSTME, told the way we count inventory.</p>
+
+  <div class="shelf">
+    <div class="tag-slot reveal" style="--fill-level:38%;">
+      <div class="tag" style="--tag-a:#cfe8b0; --tag-b:#a7d9e8;">
+        <div class="tag-hole"></div>
+        <div class="tag-fill"></div>
+        <div class="tag-face">
+          <span class="tag-eyebrow">Chapter 01</span>
+          <span class="tag-pct">38%</span>
+          <span class="tag-bars" aria-hidden="true"></span>
+        </div>
+      </div>
+      <h3>A small shelf, a big idea</h3>
+      <p>COSTME began as a tiny home-based collection of skincare favorites, shared with friends who kept asking "where did you get that?"</p>
+    </div>
+
+    <div class="tag-slot reveal" style="--fill-level:68%;">
+      <div class="tag" style="--tag-a:#f7d6e0; --tag-b:#f9e79f;">
+        <div class="tag-hole"></div>
+        <div class="tag-fill"></div>
+        <div class="tag-face">
+          <span class="tag-eyebrow">Chapter 02</span>
+          <span class="tag-pct">68%</span>
+          <span class="tag-bars" aria-hidden="true"></span>
+        </div>
+      </div>
+      <h3>From shelf to storefront</h3>
+      <p>As word spread, we outgrew word-of-mouth. We built real inventory tracking so every customer sees exactly what's actually in stock.</p>
+    </div>
+
+    <div class="tag-slot reveal" style="--fill-level:94%;">
+      <div class="tag" style="--tag-a:#e0c3fc; --tag-b:#8ec5fc;">
+        <div class="tag-hole"></div>
+        <div class="tag-fill"></div>
+        <div class="tag-face">
+          <span class="tag-eyebrow">Chapter 03</span>
+          <span class="tag-pct">94%</span>
+          <span class="tag-bars" aria-hidden="true"></span>
+        </div>
+      </div>
+      <h3>A trusted online shelf</h3>
+      <p>Today, COSTME serves customers across skincare, hair care, makeup, fragrance, and personal care — all backed by real stock, real reviews.</p>
+    </div>
+  </div>
+
+  <!-- ---------- Values ---------- -->
+  <div class="about-section-title reveal">What we stand for</div>
+  <p class="about-section-sub reveal">The promises behind every order.</p>
+  <div class="value-row">
+    <div class="value-card reveal">
+      <div class="value-mark" style="--card-a:#cfe8b0; --card-b:#a7d9e8;">✅</div>
+      <strong>Real stock, always</strong>
+      <span>What you see is what's on the shelf — updated the moment someone buys.</span>
+    </div>
+    <div class="value-card reveal">
+      <div class="value-mark" style="--card-a:#f7d6e0; --card-b:#f9e79f;">💬</div>
+      <strong>Honest reviews</strong>
+      <span>Ratings come only from customers who've actually bought the product.</span>
+    </div>
+    <div class="value-card reveal">
+      <div class="value-mark" style="--card-a:#c9e4de; --card-b:#f6cccb;">💳</div>
+      <strong>Pay your way</strong>
+      <span>Cash on delivery, card, or digital wallet — whatever's easiest for you.</span>
+    </div>
+    <div class="value-card reveal">
+      <div class="value-mark" style="--card-a:#e0c3fc; --card-b:#8ec5fc;">🤍</div>
+      <strong>People-first support</strong>
+      <span>A real team behind every order, reachable through Contact Us.</span>
+    </div>
+  </div>
+
+  <!-- ---------- Quote band ---------- -->
+  <div class="quote-band reveal">
+    <div class="quote-mark">"</div>
+    <blockquote>I ordered twice this month and both times the stock count matched exactly what showed up at my door. It's a small thing, but it's why I keep coming back.</blockquote>
+    <cite>— Srey Leak, COSTME customer</cite>
+  </div>
+
+  <!-- ---------- Stats ---------- -->
+  <div class="stat-row reveal">
+    <div class="stat-item">
+      <div class="stat-num" data-count="5" data-suffix="+">0</div>
+      <div class="stat-label">Product categories</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-count="100" data-suffix="%">0</div>
+      <div class="stat-label">Real-time stock accuracy</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-count="3" data-suffix="">0</div>
+      <div class="stat-label">Ways to pay</div>
+    </div>
+  </div>
+
+  <div class="about-cta reveal">
+    <p>Ready to see what's actually on the shelf today?</p>
+    <a href="/customer.html" class="shop-btn">Go to shop</a>
+  </div>
+
+</main>
+
+<footer class="shop-footer">
+  <div class="shop-logo"><img src="/image/logo.png" alt="COSTME Logo"></div>
+  <p>Your everyday stock and sale tracker — real inventory, updated the moment someone buys, so what you see is always what's actually on the shelf.</p>
+</footer>
+
+<script src="/js/api.js"></script>
+<script>
+  const session = requireRoleOrRedirect("customer");
+  if (session) {
+    document.getElementById("userName").textContent = session.user.name;
+  }
+</script>
+
+<script>
+  // Receipt date stamp
+  (function () {
+    const el = document.getElementById("receiptDate");
+    if (el) {
+      const d = new Date();
+      const stamp = d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
+      el.textContent = "NO. 00184 — " + stamp.toUpperCase();
+    }
+  })();
+
+  // Scroll-triggered reveals + tag fill + count-up stats
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in");
+        if (entry.target.classList.contains("stat-row")) runCountUp();
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.25 });
+
+  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+  function runCountUp() {
+    document.querySelectorAll(".stat-num").forEach((el) => {
+      const target = parseInt(el.dataset.count, 10);
+      const suffix = el.dataset.suffix || "";
+      const duration = 1100;
+      const start = performance.now();
+      function tick(now) {
+        const p = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(eased * target) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+</script>
+
+</body>
+</html>

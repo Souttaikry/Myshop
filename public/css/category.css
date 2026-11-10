@@ -1,0 +1,188 @@
+/* ---------- Category page — "The Directory Board" (companion to about.css / contact.css) ---------- */
+
+.category-deep {
+  --paper: #f8f3e6;
+  --paper-edge: #e7dac0;
+  --ink: #223326;
+  --ink-soft: #47543f;
+  --stamp: #a1472e;
+  --sage: #7fa672;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --font-kh: 'Kantumruy Pro', sans-serif;
+}
+
+.category-deep .category-hero h1,
+.category-deep .category-section-title {
+  font-family: 'Fraunces', var(--font-display, serif);
+}
+
+/* ================= Hero: the directory board ================= */
+
+.category-hero {
+  margin: 30px auto 0;
+  padding: 40px 20px 60px;
+  display: flex;
+  justify-content: center;
+  background:
+    radial-gradient(60% 70% at 50% 0%, #eef2e3 0%, transparent 65%),
+    var(--paper);
+}
+
+.board {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  background: #fffdf8;
+  border: 1px solid var(--paper-edge);
+  padding: 32px 34px 28px;
+  box-shadow: 0 26px 50px -20px rgba(34, 51, 38, 0.28);
+  transform: rotate(0.8deg);
+  opacity: 0;
+  animation: boardDrop 0.9s cubic-bezier(.16,.9,.3,1) 0.1s forwards;
+}
+.board::before, .board::after {
+  /* mounting screws, top corners */
+  content: ""; position: absolute; top: 14px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--paper-edge);
+}
+.board::before { left: 16px; }
+.board::after { right: 16px; }
+
+@keyframes boardDrop {
+  from { opacity: 0; transform: rotate(3deg) translateY(-16px); }
+  to   { opacity: 1; transform: rotate(0.8deg) translateY(0); }
+}
+
+.board-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+  color: var(--ink);
+}
+.board-total { font-weight: 600; color: var(--stamp); }
+
+.board-rule { border: none; border-top: 1px dotted #cabf9f; margin: 14px 0; }
+.board-rule-dashed { border-top-style: dashed; }
+
+.board .kh {
+  display: block; font-family: var(--font-kh);
+  font-size: clamp(18px, 2.6vw, 22px);
+  color: var(--ink-soft);
+  margin: 18px 0 10px;
+}
+.board h1 {
+  font-weight: 600; font-style: normal;
+  font-size: clamp(26px, 4vw, 34px);
+  line-height: 1.22;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.board h1 em { font-style: italic; color: var(--stamp); }
+.board p {
+  font-family: var(--font-kh); color: var(--ink-soft); font-size: 14px; line-height: 1.7;
+}
+
+/* ================= Section scaffolding ================= */
+
+.category-wrap { max-width: 1120px; margin: 0 auto; padding: 54px 32px 80px; }
+
+.category-section-title {
+  font-size: 22px; font-weight: 600; color: var(--ink); margin: 0 0 6px;
+}
+.category-section-sub {
+  font-size: 13.5px; color: var(--shop-muted, #83907c); margin-bottom: 34px;
+}
+.reveal {
+  opacity: 0; transform: translateY(22px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* ================= Aisle cards: hanging shelf markers ================= */
+
+.aisle-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px 26px;
+}
+
+.aisle-card {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: 46px 22px 26px;
+  background: var(--shop-panel, #fff);
+  border: 1px solid var(--shop-line, var(--paper-edge));
+  border-radius: var(--shop-radius, 16px);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.aisle-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 30px rgba(34,51,38,0.12);
+  border-color: var(--sage);
+}
+
+.aisle-peg {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 1px; height: 16px; background: #b7ab8c;
+}
+
+.aisle-tag {
+  position: relative;
+  width: 108px; height: 68px;
+  border-radius: 10px;
+  border: 1.5px dashed rgba(34,51,38,0.35);
+  background: linear-gradient(160deg, var(--aisle-a, #cfe8b0), var(--aisle-b, #a7d9e8));
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  margin-bottom: 18px;
+}
+.aisle-tag::before {
+  content: ""; position: absolute; top: 7px; left: 50%; transform: translateX(-50%);
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--paper, #f8f3e6);
+  border: 1.5px solid rgba(34,51,38,0.35);
+}
+.aisle-num {
+  font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: 0.12em;
+  color: var(--ink); margin-top: 6px;
+}
+.aisle-icon { font-size: 22px; }
+
+.aisle-tag-all {
+  background: repeating-linear-gradient(135deg, #efe7d8 0 8px, #f6f1e4 8px 16px);
+}
+
+.aisle-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--ink); }
+.aisle-card p {
+  font-size: 12.5px; color: var(--shop-muted, #83907c); line-height: 1.55;
+  max-width: 220px; margin-bottom: 16px;
+}
+.aisle-link {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+  color: var(--sage); margin-top: auto;
+}
+.aisle-card:hover .aisle-link { color: var(--stamp); }
+
+.aisle-card-all { border-style: dashed; }
+
+@media (max-width: 900px) {
+  .aisle-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 760px) {
+  .category-hero { padding: 24px 16px 40px; }
+  .category-wrap { padding: 40px 18px 60px; }
+  .board { padding: 28px 22px 24px; }
+}
+@media (max-width: 560px) {
+  .aisle-grid { grid-template-columns: 1fr; }
+}
+
+/* ================= Footer product line ================= */
+.footer-products {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.75;
+  margin-top: 10px;
+}

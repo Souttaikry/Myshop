@@ -1,0 +1,201 @@
+/* ---------- Contact page v2 — "The Queue Ticket" (companion to about.css) ---------- */
+
+.contact-deep {
+  --paper: #f8f3e6;
+  --paper-edge: #e7dac0;
+  --ink: #223326;
+  --ink-soft: #47543f;
+  --stamp: #a1472e;
+  --sage: #7fa672;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --font-kh: 'Kantumruy Pro', sans-serif;
+}
+
+.contact-deep .label-title {
+  font-family: 'Fraunces', var(--font-display, serif);
+}
+
+/* ================= Hero: the queue ticket ================= */
+
+.contact-hero {
+  margin: 30px auto 0;
+  padding: 40px 20px 46px;
+  display: flex;
+  justify-content: center;
+  background:
+    radial-gradient(60% 70% at 50% 0%, #eef2e3 0%, transparent 65%),
+    var(--paper);
+}
+
+.ticket {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  background: #fffdf8;
+  border: 1px solid var(--paper-edge);
+  box-shadow: 0 26px 50px -20px rgba(34, 51, 38, 0.28);
+  opacity: 0;
+  animation: ticketDrop 0.8s cubic-bezier(.16,.9,.3,1) 0.1s forwards;
+}
+
+@keyframes ticketDrop {
+  from { opacity: 0; transform: translateY(-14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* punched circle notches at the perforation, top & bottom */
+.ticket::before, .ticket::after {
+  content: "";
+  position: absolute; left: 160px; transform: translateX(-50%);
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+}
+.ticket::before { top: -11px; }
+.ticket::after { bottom: -11px; }
+
+.ticket-stub {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 28px 14px;
+  border-right: 1.5px dashed var(--paper-edge);
+  text-align: center;
+}
+.ticket-mono {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+.ticket-dim { color: #9a8f78; }
+.ticket-number {
+  font-family: var(--font-mono); font-weight: 600; font-size: 26px; color: var(--stamp);
+}
+
+.ticket-main {
+  padding: 30px 34px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.ticket-main h1 {
+  font-family: var(--font-kh); font-size: clamp(22px, 3vw, 28px);
+  margin: 2px 0 4px; color: var(--ink);
+}
+.ticket-main p {
+  font-family: var(--font-kh); color: var(--ink-soft); font-size: 13.5px; max-width: 460px; line-height: 1.7;
+}
+
+/* ================= Layout ================= */
+
+.contact-wrap {
+  max-width: 1100px; margin: 0 auto; padding: 46px 32px 70px;
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 26px;
+}
+
+/* Left: directory card, reads like a shelf inventory line */
+.label-card {
+  background: var(--shop-panel, #fff);
+  border: 1px solid var(--shop-line, var(--paper-edge));
+  border-radius: var(--shop-radius, 16px);
+  padding: 30px 28px;
+}
+.label-eyebrow {
+  font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--stamp); margin-bottom: 8px;
+}
+.label-title {
+  font-size: 22px; font-weight: 600; margin-bottom: 18px; color: var(--ink);
+}
+.ingredient-list { list-style: none; padding: 0; margin: 0; }
+.ingredient-list li {
+  display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px dashed var(--paper-edge);
+}
+.ingredient-list li:last-child { border-bottom: none; }
+.ingredient-mark {
+  width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+  background: linear-gradient(135deg, #cfe8b0, #a7d9e8);
+}
+.ingredient-body strong { display: block; font-size: 13px; font-weight: 700; color: var(--ink); }
+.ingredient-body span { font-size: 12.5px; color: var(--shop-muted, #83907c); line-height: 1.5; }
+
+.social-row { display: flex; gap: 10px; margin-top: 20px; }
+.social-row a {
+  width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--shop-line, var(--paper-edge));
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+  color: var(--ink); text-decoration: none;
+}
+.social-row a:hover { border-color: var(--sage); color: var(--stamp); }
+
+/* Right: contact form styled like a carbon-copy service docket */
+.contact-form-card {
+  background: var(--shop-panel, #fff);
+  border: 1px solid var(--shop-line, var(--paper-edge));
+  border-radius: var(--shop-radius, 16px);
+  padding: 30px 28px;
+  position: relative;
+  overflow: hidden;
+}
+.contact-form-card::before {
+  /* faint carbon-copy stripe down the left, ties to the ticket motif */
+  content: "";
+  position: absolute; top: 0; bottom: 0; left: 0; width: 5px;
+  background: repeating-linear-gradient(180deg, var(--sage) 0 10px, transparent 10px 20px);
+  opacity: 0.5;
+}
+
+.form-row { margin-bottom: 16px; }
+.form-row label {
+  display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 7px;
+}
+.form-row input, .form-row textarea {
+  width: 100%; border: none; border-bottom: 1.5px dashed var(--paper-edge);
+  border-radius: 0;
+  padding: 9px 2px; font-family: var(--font-shop-body, inherit); font-size: 14px;
+  background: transparent; color: var(--ink); resize: vertical;
+}
+.form-row input:focus, .form-row textarea:focus {
+  outline: none; border-bottom-color: var(--sage); border-bottom-style: solid;
+}
+.form-two { display: flex; gap: 14px; }
+.form-two .form-row { flex: 1; }
+.contact-submit {
+  width: 100%; border: none; border-radius: 30px; padding: 13px 20px;
+  background: var(--sage); color: #fff; font-weight: 700; font-size: 14px;
+  cursor: pointer; font-family: var(--font-shop-body, inherit);
+  margin-top: 6px;
+}
+.contact-submit:hover { background: var(--ink); }
+.contact-note { font-size: 11.5px; color: var(--shop-muted, #83907c); margin-top: 10px; text-align: center; }
+
+/* Success state: an ink stamp, not a generic checkmark */
+.contact-success {
+  display: none; text-align: center; padding: 34px 10px;
+}
+.stamp-mark {
+  display: inline-block;
+  font-family: var(--font-mono); font-weight: 600; font-size: 15px; letter-spacing: 0.12em;
+  color: var(--stamp);
+  border: 2.5px solid var(--stamp);
+  border-radius: 8px;
+  padding: 8px 18px;
+  transform: rotate(-6deg);
+  margin-bottom: 16px;
+  animation: stampDown 0.35s ease;
+}
+@keyframes stampDown {
+  from { opacity: 0; transform: rotate(-6deg) scale(1.6); }
+  to   { opacity: 1; transform: rotate(-6deg) scale(1); }
+}
+.contact-success h4 { font-family: 'Fraunces', var(--font-display, serif); font-size: 18px; margin-bottom: 6px; color: var(--ink); }
+.contact-success p { font-size: 13px; color: var(--shop-muted, #83907c); }
+
+@media (max-width: 760px) {
+  .contact-hero { padding: 24px 16px 34px; }
+  .ticket { grid-template-columns: 1fr; }
+  .ticket-stub { flex-direction: row; justify-content: space-between; border-right: none; border-bottom: 1.5px dashed var(--paper-edge); padding: 16px 20px; }
+  .ticket::before, .ticket::after { display: none; }
+  .contact-wrap { grid-template-columns: 1fr; padding: 30px 18px 60px; }
+  .form-two { flex-direction: column; gap: 0; }
+}

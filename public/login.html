@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockLedger Login</title>
+
+<link rel="stylesheet" href="/css/style.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <!-- Left Side -->
+    <div class="left-panel">
+        <img src="/image/login-banner.jpg" alt="Login Banner">
+    </div>
+
+    <!-- Right Side -->
+    <div class="right-panel">
+
+        
+
+        <h2>WELCOME TO STOCKLEDGER</h2>
+        <p>Please login to continue</p>
+
+        <div id="alertBox" class="alert"></div>
+
+        <form id="loginForm">
+
+            <!-- Email -->
+            <div class="input-box">
+                <i class="fa-regular fa-user"></i>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Email"
+                    required>
+            </div>
+
+            <!-- Password -->
+            <div class="input-box">
+                <i class="fa-solid fa-lock"></i>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Password"
+                    required>
+
+                <i
+                    class="fa-solid fa-eye toggle-password"
+                    id="togglePassword">
+                </i>
+
+            </div>
+
+            <!-- Remember -->
+            <div class="remember">
+                <input type="checkbox" id="remember">
+                <label for="remember">Remember me!</label>
+            </div>
+
+            <button class="login-btn" type="submit">
+                Login
+            </button>
+
+        </form>
+
+        <div class="signup">
+            Don't have an account?
+            <a href="/register.html">Sign Up</a>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/verify.js"></script>
+
+<script>
+
+//===========================
+// Show / Hide Password
+//===========================
+
+const passwordInput = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+
+togglePassword.addEventListener("click", function () {
+
+    if (passwordInput.type === "password") {
+
+        passwordInput.type = "text";
+
+        togglePassword.classList.remove("fa-eye");
+        togglePassword.classList.add("fa-eye-slash");
+
+    } else {
+
+        passwordInput.type = "password";
+
+        togglePassword.classList.remove("fa-eye-slash");
+        togglePassword.classList.add("fa-eye");
+
+    }
+
+});
+
+//===========================
+// Login
+//===========================
+
+const form = document.getElementById("loginForm");
+const alertBox = document.getElementById("alertBox");
+
+const existing = getSession();
+
+if (existing) {
+
+    window.location.href =
+        existing.user.role === "admin"
+            ? "/admin.html"
+            : "/customer.html";
+
+}
+
+form.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    alertBox.classList.remove("show");
+
+    const email = document.getElementById("email").value.trim();
+
+    const password = document.getElementById("password").value;
+
+    try {
+
+        let data;
+
+        try {
+
+            data = await apiFetch("/api/auth/login", {
+
+                method: "POST",
+
+                body: JSON.stringify({
+                    email,
+                    password
+                })
+
+            });
+
+        } catch (err) {
+
+            // Account exists but the email isn't verified yet: ask for the code
+            if (err.data && err.data.needsVerification) {
+
+                data = await showVerifyModal(err.data);
+
+            } else {
+
+                throw err;
+
+            }
+
+        }
+
+        saveSession(data);
+
+        window.location.href =
+            data.user.role === "admin"
+                ? "/admin.html"
+                : "/customer.html";
+
+    } catch (err) {
+
+        alertBox.textContent = err.message;
+        alertBox.classList.add("show");
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

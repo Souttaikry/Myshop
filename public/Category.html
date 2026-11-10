@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Category — COSTME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@500;600&family=Kantumruy+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shop.css" />
+<link rel="stylesheet" href="/css/category.css" />
+</head>
+<body class="shop category-deep">
+
+<header class="shop-header">
+  <div class="shop-logo"><img src="/image/logo.png" alt="COSTME Logo"></div>
+  <nav class="shop-nav">
+    <a data-view="shop" href="/customer.html">Shop</a>
+    <a data-view="Invoice" href="/invoice.html">Invoices</a>
+    <a data-view="orders" href="/orders.html">My Orders</a>
+    <a data-view="/category" href="/category.html" class="active">CATEGORY</a>
+    <a data-view="/contact.html" href="/contact.html">CONTACT US</a>
+    <a data-view="/about.html" href="/about.html">ABOUT US</a>
+  </nav>
+  <div class="shop-actions">
+    <button class="icon-circle" id="searchToggle" title="Search" onclick="window.location.href='/customer.html'">🔍</button>
+    <button class="icon-circle" id="cartToggle" title="Cart" onclick="window.location.href='/customer.html'">
+      🛒<span class="cart-count" id="cartCount" style="display:none;">0</span>
+    </button>
+    <div class="shop-user">
+      Hi, <strong id="userName"></strong>
+      <br />
+      <button class="shop-logout" onclick="logout()">Log out</button>
+    </div>
+  </div>
+</header>
+
+<!-- ---------- Hero: the directory board ---------- -->
+<section class="category-hero">
+  <div class="board">
+    <div class="board-row board-mono">
+      <span>COSTME</span><span>STORE DIRECTORY</span>
+    </div>
+    <div class="board-rule"></div>
+    <span class="kh">មើលតាមប្រភេទ</span>
+    <h1>Every aisle,<br><em>one shelf away.</em></h1>
+    <p>ជ្រើសរើសប្រភេទដែលអ្នកចង់បាន ដើម្បីមើលផលិតផលទាំងអស់ដែលមានស្តុកនាពេលនេះ។</p>
+    <div class="board-rule board-rule-dashed"></div>
+    <div class="board-row board-mono board-total">
+      <span>AISLES OPEN</span><span id="aisleCount">5 / 5</span>
+    </div>
+  </div>
+</section>
+
+<main class="category-wrap">
+
+  <div class="category-section-title reveal">Browse by aisle</div>
+  <p class="category-section-sub reveal">Tap an aisle to jump straight to what's stocked there.</p>
+
+  <div class="aisle-grid">
+
+    <a class="aisle-card reveal" href="/customer.html?category=skincare" style="--aisle-a:#cfe8b0; --aisle-b:#a7d9e8;">
+      <div class="aisle-peg"></div>
+      <div class="aisle-tag">
+        <span class="aisle-num">AISLE 01</span>
+        <span class="aisle-icon">🧴</span>
+      </div>
+      <h3>Skincare</h3>
+      <p>Cleansers, serums, moisturizers, and sunscreen — the everyday routine staples.</p>
+      <span class="aisle-link">Browse aisle →</span>
+    </a>
+
+    <a class="aisle-card reveal" href="/customer.html?category=hair-care" style="--aisle-a:#f7d6e0; --aisle-b:#f9e79f;">
+      <div class="aisle-peg"></div>
+      <div class="aisle-tag">
+        <span class="aisle-num">AISLE 02</span>
+        <span class="aisle-icon">💆‍♀️</span>
+      </div>
+      <h3>Hair care</h3>
+      <p>Shampoo, conditioner, treatments, and styling essentials for every hair type.</p>
+      <span class="aisle-link">Browse aisle →</span>
+    </a>
+
+    <a class="aisle-card reveal" href="/customer.html?category=makeup" style="--aisle-a:#e0c3fc; --aisle-b:#8ec5fc;">
+      <div class="aisle-peg"></div>
+      <div class="aisle-tag">
+        <span class="aisle-num">AISLE 03</span>
+        <span class="aisle-icon">💄</span>
+      </div>
+      <h3>Makeup</h3>
+      <p>Base, lips, eyes, and cheeks — the colour counter, always freshly stocked.</p>
+      <span class="aisle-link">Browse aisle →</span>
+    </a>
+
+    <a class="aisle-card reveal" href="/customer.html?category=fragrance" style="--aisle-a:#c9e4de; --aisle-b:#f6cccb;">
+      <div class="aisle-peg"></div>
+      <div class="aisle-tag">
+        <span class="aisle-num">AISLE 04</span>
+        <span class="aisle-icon">🌸</span>
+      </div>
+      <h3>Fragrance</h3>
+      <p>Perfumes, mists, and rollerballs — from everyday scents to special-occasion ones.</p>
+      <span class="aisle-link">Browse aisle →</span>
+    </a>
+
+    <a class="aisle-card reveal" href="/customer.html?category=personal-care" style="--aisle-a:#ffe1b3; --aisle-b:#cfe8b0;">
+      <div class="aisle-peg"></div>
+      <div class="aisle-tag">
+        <span class="aisle-num">AISLE 05</span>
+        <span class="aisle-icon">🧼</span>
+      </div>
+      <h3>Personal care</h3>
+      <p>Body wash, deodorant, oral care, and the rest of the everyday essentials.</p>
+      <span class="aisle-link">Browse aisle →</span>
+    </a>
+
+    <a class="aisle-card aisle-card-all reveal" href="/customer.html">
+      <div class="aisle-peg"></div>
+      <div class="aisle-tag aisle-tag-all">
+        <span class="aisle-num">ALL AISLES</span>
+        <span class="aisle-icon">🗂️</span>
+      </div>
+      <h3>See everything</h3>
+      <p>Not sure where to start? Browse the full, real-time shelf in one place.</p>
+      <span class="aisle-link">Browse the shop →</span>
+    </a>
+
+  </div>
+
+</main>
+
+<footer class="shop-footer">
+  <div class="shop-logo"><img src="/image/logo.png" alt="COSTME Logo"></div>
+  <p>Your everyday stock and sale tracker — real inventory, updated the moment someone buys, so what you see is always what's actually on the shelf.</p>
+  <p class="footer-products">Skincare · Hair care · Makeup · Fragrance · Personal care</p>
+</footer>
+
+<script src="/js/api.js"></script>
+<script>
+  const session = requireRoleOrRedirect("customer");
+  if (session) {
+    document.getElementById("userName").textContent = session.user.name;
+  }
+</script>
+<script>
+  // Scroll-triggered reveals, same pattern as about.html
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in");
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+</script>
+
+</body>
+</html>

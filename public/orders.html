@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Orders — COSTME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@500;600&family=Kantumruy+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/shop.css" />
+<link rel="stylesheet" href="/css/orders.css" />
+</head>
+<body class="shop orders-deep">
+
+<header class="shop-header">
+  <div class="shop-logo"><img src="/image/logo.png" alt="COSTME Logo"></div>
+  <nav class="shop-nav">
+    <a data-view="shop" href="/customer.html">Shop</a>
+    <a data-view="Invoice" href="/invoice.html">Invoices</a>
+    <a data-view="orders" href="/orders.html" class="active">My Orders</a>
+    <a data-view="/category" href="/category.html">CATEGORY</a>
+    <a data-view="/contact.html" href="/contact.html">CONTACT US</a>
+    <a data-view="/about.html" href="/about.html">ABOUT US</a>
+  </nav>
+  <div class="shop-actions">
+    <button class="icon-circle" id="searchToggle" title="Search" onclick="window.location.href='/customer.html'">🔍</button>
+    <button class="icon-circle" id="cartToggle" title="Cart" onclick="window.location.href='/customer.html'">
+      🛒<span class="cart-count" id="cartCount" style="display:none;">0</span>
+    </button>
+    <div class="shop-user">
+      Hi, <strong id="userName"></strong>
+      <br />
+      <button class="shop-logout" onclick="logout()">Log out</button>
+    </div>
+  </div>
+</header>
+
+<!-- ---------- Hero: the order log ---------- -->
+<section class="orders-hero">
+  <div class="log">
+    <div class="log-row log-mono">
+      <span>COSTME</span><span>ORDER LOG</span>
+    </div>
+    <div class="log-rule"></div>
+    <span class="kh">ការកម្ម៉ង់របស់ខ្ញុំ</span>
+    <h1>Every order,<br><em>kept on the record.</em></h1>
+    <p>តាមដានតែការកម្ម៉ង់ដែលបានទូទាត់រួចរាល់ប៉ុណ្ណោះ។</p>
+    <div class="log-rule log-rule-dashed"></div>
+    <div class="log-stats">
+      <div class="log-stat"><span class="log-stat-num" id="statTotal">0</span><span class="log-stat-label">Completed orders</span></div>
+      <div class="log-stat"><span class="log-stat-num" id="statRevenue">$0</span><span class="log-stat-label">Total paid</span></div>
+    </div>
+  </div>
+</section>
+
+<main class="orders-wrap">
+
+  <div class="orders-toolbar reveal">
+    <p class="orders-note">Showing only orders that are done — order placed and payment complete.</p>
+  </div>
+
+  <div class="order-stack" id="orderStack"></div>
+
+  <div class="orders-empty" id="ordersEmpty">
+    <div class="empty-mark">🗒️</div>
+    <h3>No completed orders yet</h3>
+    <p>Nothing has been marked done. Orders that are still pending or were cancelled won't show up here.</p>
+    <a href="/customer.html" class="shop-btn">Go to shop</a>
+  </div>
+
+</main>
+
+<!-- ---------- Invoice modal (shown once an order's payment is done) ---------- -->
+<div class="inv-backdrop" id="invBackdrop">
+  <div class="inv-modal" id="invModal">
+    <button class="inv-close" id="invClose">✕</button>
+    <div class="inv-head">
+      <div>
+        <div class="inv-brand">COSTME</div>
+        <div class="inv-brand-sub">Cosmetics &amp; personal care · Phnom Penh, Cambodia</div>
+      </div>
+      <span class="inv-paid-stamp">Paid</span>
+    </div>
+
+    <div class="inv-meta">
+      <div><span>Invoice for order</span><strong id="invOrderNum">—</strong></div>
+      <div><span>Date</span><strong id="invDate">—</strong></div>
+      <div><span>Billed to</span><strong id="invCustomer">—</strong></div>
+    </div>
+
+    <div class="inv-rule"></div>
+
+    <table class="inv-table">
+      <thead>
+        <tr><th>Item</th><th class="num">Qty</th><th class="num">Unit</th><th class="num">Amount</th></tr>
+      </thead>
+      <tbody id="invItemsBody"></tbody>
+    </table>
+
+    <div class="inv-rule inv-rule-dashed"></div>
+
+    <div class="inv-totals">
+      <div><span>Subtotal</span><span id="invSubtotal">$0.00</span></div>
+      <div><span>Shipping</span><span id="invShipping">$0.00</span></div>
+      <div class="inv-grand"><span>Total paid</span><span id="invTotal">$0.00</span></div>
+    </div>
+
+    <div class="inv-rule"></div>
+
+    <div class="inv-pay">
+      <div><span>Payment method</span><strong id="invPayMethod">—</strong></div>
+      <div id="invPayRefRow"><span>Reference</span><strong id="invPayRef">—</strong></div>
+      <div><span>Order ID</span><strong id="invRawId">—</strong></div>
+    </div>
+
+    <p class="inv-footnote">Thank you for shopping with COSTME. This invoice confirms your payment was received in full.</p>
+  </div>
+</div>
+
+<footer class="shop-footer">
+  <div class="shop-logo"><img src="/image/logo.png" alt="COSTME Logo"></div>
+  <p>Your everyday stock and sale tracker — real inventory, updated the moment someone buys, so what you see is always what's actually on the shelf.</p>
+  <p class="footer-products">Skincare · Hair care · Makeup · Fragrance · Personal care</p>
+</footer>
+
+<script src="/js/api.js"></script>
+<script>
+  const session = requireRoleOrRedirect("customer");
+  if (session) {
+    document.getElementById("userName").textContent = session.user.name;
+  }
+</script>
+<script>
+  // ============================================================
+  // This page only shows orders that are DONE: order placed and
+  // payment complete, i.e. sale.status === "completed" on the
+  // real backend (sale.js allows only "pending" | "completed" |
+  // "cancelled" — there is no separate "shipped" state). Pending
+  // and cancelled orders are filtered out before rendering.
+  //
+  //   {
+  //     _id, createdAt,
+  //     customer:      { _id, name },
+  //     items:         [{ name, quantity, unitPrice, subtotal }],
+  //     total, paymentMethod, paymentReference,
+  //     status: "pending" | "completed" | "cancelled"
+  //   }
+  // ============================================================
+
+  const SAMPLE_ORDERS = [
+    {
+      id: "COS-10234", date: "2026-07-18", payment: "Card", status: "completed",
+      items: [
+        { name: "Vitamin C Brightening Serum", qty: 1, price: 14.50 },
+        { name: "Aloe Gel Cleanser", qty: 2, price: 9.00 }
+      ]
+    },
+    {
+      id: "COS-10221", date: "2026-07-12", payment: "COD", status: "completed",
+      items: [
+        { name: "Rice Water Shampoo", qty: 1, price: 11.00 },
+        { name: "Silk Hair Oil", qty: 1, price: 9.50 }
+      ]
+    }
+  ];
+
+  const STATUS_LABEL = { completed: "Done" };
+
+  function formatDate(iso) {
+    const d = new Date(iso);
+    if (isNaN(d)) return iso;
+    return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
+  }
+
+  function money(n) { return "$" + Number(n).toFixed(2); }
+
+  function renderSlip(order) {
+    const subtotal = order.items.reduce((sum, i) => sum + i.qty * i.price, 0);
+    const shipping = 1.50;
+    const total = subtotal + shipping;
+    const itemCount = order.items.reduce((sum, i) => sum + i.qty, 0);
+
+    const itemsHtml = order.items.map((i) => `
+      <li>
+        <span class="item-name">${i.name} <em>×${i.qty}</em></span>
+        <span class="item-leader"></span>
+        <span class="item-price">${money(i.qty * i.price)}</span>
+      </li>`).join("");
+
+    const article = document.createElement("article");
+    article.className = "receipt-slip reveal";
+    article.dataset.status = "completed";
+    article.dataset.orderId = order._rawId || "";
+    article.innerHTML = `
+      <div class="slip-head">
+        <div>
+          <span class="slip-mono slip-dim">ORDER NO.</span>
+          <span class="slip-order-num">#${order.id}</span>
+        </div>
+        <span class="status-stamp status-completed">${STATUS_LABEL.completed}</span>
+      </div>
+      <div class="slip-row slip-mono slip-dim">
+        <span>Placed ${formatDate(order.date)}${order.customerName ? ` · ${order.customerName}` : ""}</span><span>${itemCount} item${itemCount === 1 ? "" : "s"}</span>
+      </div>
+      <div class="slip-rule"></div>
+      <ul class="slip-items">${itemsHtml}</ul>
+      <div class="slip-details" style="display:none;"></div>
+      <div class="slip-rule slip-rule-dashed"></div>
+      <div class="slip-totals">
+        <div><span>Subtotal</span><span>${money(subtotal)}</span></div>
+        <div><span>Shipping</span><span>${money(shipping)}</span></div>
+        ${order.paymentReference ? `<div><span>${order.payment}</span><span>${order.paymentReference}</span></div>` : ""}
+        <div class="slip-grand"><span>Total</span><span>${money(total)}</span></div>
+      </div>
+      <div class="slip-actions">
+        <button class="slip-btn slip-btn-ghost" data-action="details">View details</button>
+        <button class="slip-btn slip-btn-ghost" data-action="invoice">Invoice</button>
+        <button class="slip-btn" data-action="primary">Reorder</button>
+      </div>
+    `;
+
+    const detailsBox = article.querySelector(".slip-details");
+    article.querySelector('[data-action="details"]').addEventListener("click", () => {
+      const isOpen = detailsBox.style.display !== "none";
+      if (isOpen) {
+        detailsBox.style.display = "none";
+        return;
+      }
+      detailsBox.style.display = "block";
+      detailsBox.innerHTML = `
+        <div class="slip-rule slip-rule-dashed"></div>
+        <div class="slip-row slip-mono slip-dim"><span>Order ID</span><span>${order._rawId || "—"}</span></div>
+        <div class="slip-row slip-mono slip-dim"><span>Payment method</span><span>${order.payment}</span></div>
+        ${order.paymentReference ? `<div class="slip-row slip-mono slip-dim"><span>Reference</span><span>${order.paymentReference}</span></div>` : ""}
+        ${order.customerName ? `<div class="slip-row slip-mono slip-dim"><span>Customer</span><span>${order.customerName}</span></div>` : ""}
+      `;
+    });
+
+    article.querySelector('[data-action="invoice"]').addEventListener("click", () => {
+      if (order.invoiceId) {
+        // Real invoice, saved in MongoDB — same page shown right after checkout.
+        window.location.href = "/invoice.html?id=" + order.invoiceId;
+      } else {
+        // Order was placed before invoices existed — fall back to the
+        // reconstructed summary so the button still does something useful.
+        openInvoice(order);
+      }
+    });
+
+    article.querySelector('[data-action="primary"]').addEventListener("click", (e) => reorderOrder(order, e.target));
+
+    return article;
+  }
+
+  /* ================= Invoice modal ================= */
+
+  function openInvoice(order) {
+    const subtotal = order.items.reduce((sum, i) => sum + i.qty * i.price, 0);
+    const shipping = 1.50;
+    const total = subtotal + shipping;
+
+    document.getElementById("invOrderNum").textContent = "#" + order.id;
+    document.getElementById("invDate").textContent = formatDate(order.date);
+    document.getElementById("invCustomer").textContent = order.customerName || "You";
+    document.getElementById("invRawId").textContent = order._rawId || "—";
+    document.getElementById("invPayMethod").textContent = order.payment;
+
+    const refRow = document.getElementById("invPayRefRow");
+    if (order.paymentReference) {
+      refRow.style.display = "flex";
+      document.getElementById("invPayRef").textContent = order.paymentReference;
+    } else {
+      refRow.style.display = "none";
+    }
+
+    document.getElementById("invItemsBody").innerHTML = order.items.map((i) => `
+      <tr>
+        <td>${i.name}</td>
+        <td class="num">${i.qty}</td>
+        <td class="num">${money(i.price)}</td>
+        <td class="num">${money(i.qty * i.price)}</td>
+      </tr>
+    `).join("");
+
+    document.getElementById("invSubtotal").textContent = money(subtotal);
+    document.getElementById("invShipping").textContent = money(shipping);
+    document.getElementById("invTotal").textContent = money(total);
+
+    document.getElementById("invBackdrop").classList.add("show");
+  }
+
+  function closeInvoice() {
+    document.getElementById("invBackdrop").classList.remove("show");
+  }
+
+  document.getElementById("invClose").addEventListener("click", closeInvoice);
+  document.getElementById("invBackdrop").addEventListener("click", (e) => {
+    if (e.target.id === "invBackdrop") closeInvoice();
+  });
+
+  async function reorderOrder(order, btn) {
+    const items = order.items
+      .filter((i) => i.productId)
+      .map((i) => ({ productId: i.productId, quantity: i.qty }));
+
+    if (!items.length) {
+      window.location.href = "/customer.html";
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Reordering…";
+    try {
+      await apiFetch("/api/sales", {
+        method: "POST",
+        body: JSON.stringify({ items, paymentMethod: "cod" }),
+      });
+      alert("Reorder placed!");
+      loadOrders();
+    } catch (err) {
+      alert(err.message || "Could not reach the server to reorder.");
+      btn.disabled = false;
+      btn.textContent = "Reorder";
+    }
+  }
+
+  function renderOrders(orders) {
+    const stack = document.getElementById("orderStack");
+    stack.innerHTML = "";
+    orders.forEach((order) => stack.appendChild(renderSlip(order)));
+
+    document.getElementById("statTotal").textContent = orders.length;
+    const totalPaid = orders.reduce((sum, o) => sum + o.items.reduce((s, i) => s + i.qty * i.price, 0) + 1.50, 0);
+    document.getElementById("statRevenue").textContent = money(totalPaid);
+
+    document.getElementById("ordersEmpty").style.display = orders.length === 0 ? "block" : "none";
+
+    initReveal();
+  }
+
+  function initReveal() {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+  }
+
+  // ============================================================
+  // Sales-data bridge — fetch, then keep ONLY completed sales
+  // (order placed + payment done). Pending and cancelled sales
+  // are dropped here before anything reaches the page.
+  // ============================================================
+
+  const PAYMENT_LABEL = { cod: "COD", card: "Card", wallet: "Wallet" };
+
+  function saleToOrder(sale) {
+    return {
+      _rawId: (sale._id || sale.id || "").toString(),
+      invoiceId: sale.invoice ? String(sale.invoice) : null,
+      id: (sale._id || sale.id || "").toString().slice(-6).toUpperCase() || "ORDER",
+      date: sale.createdAt || sale.date || new Date().toISOString(),
+      payment: PAYMENT_LABEL[sale.paymentMethod] || sale.paymentMethod || "COD",
+      paymentReference: sale.paymentReference || null,
+      status: sale.status,
+      customerName: sale.customer && sale.customer.name ? sale.customer.name : null,
+      items: (sale.items || []).map((i) => ({
+        name: i.name || "Item",
+        qty: Number(i.quantity ?? 1),
+        price: Number(i.unitPrice ?? (i.subtotal && i.quantity ? i.subtotal / i.quantity : 0)),
+        productId: i.product || null
+      }))
+    };
+  }
+
+  let currentScope = "me";
+
+  async function loadOrders() {
+    // This page is customer-only (see requireRoleOrRedirect("customer")
+    // above), so it always asks for this customer's own sales —
+    // /api/sales/me. apiFetch (api.js) attaches the logged-in customer's
+    // Authorization header; a plain fetch() here would 401 every time.
+    try {
+      const sales = await apiFetch("/api/sales/me");
+      if (Array.isArray(sales)) {
+        const doneOnly = sales.filter((s) => String(s.status).toLowerCase() === "completed");
+        renderOrders(doneOnly.map(saleToOrder));
+        return;
+      }
+    } catch (err) {
+      console.warn("Falling back to sample orders:", err);
+    }
+    renderOrders(SAMPLE_ORDERS.filter((o) => o.status === "completed"));
+  }
+
+  loadOrders();
+</script>
+
+</body>
+</html>
